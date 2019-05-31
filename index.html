@@ -1,0 +1,227 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>NUMVERZ</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://use.typekit.net/lxi4ipp.css">
+
+		<style>
+			
+			body{
+				font-family: acumin-pro, sans-serif;
+				font-weight: 800;
+				font-style: normal;
+				
+				background-color: #eaeaea;
+				color: #ff0066;
+				font-family: sans-serif;
+				width: 100%;
+				height: 100%;
+			}
+			
+			*:focus{
+				border-color: inherit;
+				-webkit-box-shadow: none;
+				box-shadow: none;
+				outline: none;
+				border: none;
+			}
+			
+			input[type=range]::-webkit-slider-runnable-track {
+				width: 100%;
+				height: 8.4px;
+				cursor: pointer;
+				-webkit-appearance: none;
+				background: #b2b2b2;
+				border-radius: 1.3px;
+				border: 0.2px solid #010101;
+			}
+				
+			input[type=range]:focus::-webkit-slider-runnable-track {
+				background: #b2b2b2;
+			}
+			
+			input[type=range]::-webkit-slider-thumb {
+				
+				border: 1px solid #ffffff;
+				height: 22px;
+				width: 22px;
+				border-radius: 11px;
+				background: #aeaeae;
+				cursor: pointer;
+				-webkit-appearance: none;
+				margin-top: -4px;
+			}
+			
+			#wrapper{
+				width: 90%;
+				margin: 200px auto;
+			}
+			
+			#slide{
+				width: 100%;
+				margin: 0 auto;
+			}
+			
+			#slider{
+				width: 100%;
+				height: 50px;
+			}
+			
+			#input{
+				padding: 0px 0;
+				font-size: auto;
+				line-height: 88px;
+				height: 120px;
+				display: flex;
+				flex-flow: wrap;
+				align-content: center;
+				vertical-align: middle;
+			}
+			
+			#title{
+				width: 50%;
+				height: 99px;
+				background-image: url(numverz.svg);
+				background-size: contain;
+				background-repeat: no-repeat;
+				background-position: left center;
+			}
+			
+			#num-display{
+				background: transparent;
+				-webkit-appearance: none;
+				font-size: 99px;
+				font-family: acumin-pro, sans-serif;
+				font-weight: 800;
+				line-height: 99px;
+				height: 99px;
+				border: none;
+				display: inline-block;
+				padding: 0;
+				width: 50%;
+				margin: 0;
+				text-align: right;
+				color: #999;
+			}
+			
+			#display{
+				font-size: 99px;
+				font-family: acumin-pro, sans-serif;
+				font-weight: 800;
+				font-style: normal;
+			}
+			
+			#numwords{
+				font-size: 80px;
+				line-height: 80px;
+				margin: 30px 0 0 0;
+				width: 100%;
+				text-align: left;
+				letter-spacing: -2px;
+				font-family: acumin-pro, sans-serif;
+				font-weight: 100;
+				font-style: normal;
+				color: #878787;
+			}
+			
+		</style>
+		
+		
+    </head>
+    <body>
+	    <div id="wrapper">
+			<div id="input">
+				<div id="title"></div>
+				<input type="text" id="num-display" />
+			</div>
+			
+			<div id="slider">
+				<input type="range" id="slide" name="num-slide" min="0" max="1000000" value="0" />
+			</div>
+			
+			<div id="numwords">
+				
+			</div>
+	    </div>
+    </body>
+    <script>
+	    const oneZ = ['zero', 'one' , 'two' , 'three' , 'four' , 'five' , 'six' , 'seven' , 'eight' , 'nine' , 'ten' , 'eleven' , 'twelve' , 'thirteen' , 'fourteen' , 'fifteen' , 'sixteen' , 'seventeen' , 'eighteen' , 'nineteen' ];
+		
+		const tenZ = ['' , 'ten' , 'twenty' , 'thrirty' , 'fourty' , 'fifty' , 'sixty' , 'seventy' , 'eighty' , 'ninety' ];
+		
+		let slide = document.getElementById('slide');
+		let display = document.getElementById('num-display');
+		let numWords = document.getElementById('numwords');
+		
+		function numverz( n ){
+			n = parseInt( n );
+			console.log( n +': parse me');
+			
+			if( n < 0 || n > 1000000 ) return 'can not compute';
+			if( n === 0 ) return 'zero';
+			if( n === 1000000 ) return 'one million';
+			
+			let display = '';
+			
+			if( n >= 1000){
+				
+				let thousands = Math.floor( n / 1000 );
+				display += numverz( thousands ) + ' thousand ';
+				
+				n = (n - (thousands * 1000));
+				
+				if(n > 0){
+					display += '';
+				}
+			}
+			
+			if( n >= 100 ){
+				
+				let hundreds = Math.floor( n / 100 );
+				
+				display += numverz( hundreds ) + ' hundred ';
+				
+				n = (n - (hundreds * 100));
+				
+				if(n > 0){
+					display += ' and ';
+				} 
+			}
+			
+			if( n >= 20 ){
+				
+				let tens = Math.floor( n / 10 );
+				
+				display += tenZ[tens];
+				
+				n = (n - (tens * 10))
+				
+	            if (n > 0) {
+	                display += ' '
+	            }
+			}
+			
+			if( n > 0 ){
+				
+				display += oneZ[n];
+			}
+			
+			return display;
+		}
+			
+		function updateInt(e){
+			display.value = slide.value;
+			numwords.innerHTML =  numverz(slide.value);
+		}
+		
+		display.addEventListener('change', (e) => { updateInt(); });
+		slide.addEventListener('input', (e) => { updateInt(); });
+		
+		updateInt();
+		
+	</script>
+</html>
